@@ -44,7 +44,7 @@ export default function JobCard({ job }) {
           <Typography
             sx={{ fontSize: 12, color: (theme) => theme.palette.common.white }}
           >
-            {job.description}
+            {job.description.substring(0, 150)}
           </Typography>
         </CardContent>
 

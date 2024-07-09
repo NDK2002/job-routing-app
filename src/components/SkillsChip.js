@@ -19,8 +19,8 @@ function SkillsChip({ skills }) {
         backgroundColor: (theme) => theme.palette.primary.light,
       }}
     >
-      {skills.map((skill) => (
-        <ListItem key={skill}>
+      {skills.slice(0, 5).map((skill, index) => (
+        <ListItem key={index}>
           <Chip
             size="small"
             color="primary"

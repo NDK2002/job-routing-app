@@ -5,7 +5,7 @@ async function getJobs(page, q = null) {
     const response = await apiService.get(`/jobs?_page=${page}&_per_page=8`);
     return {
       jobs: response.data.data,
-      totalPage: response.pages,
+      totalPage: response.data.pages,
     };
   } catch (error) {
     console.log(error.message);

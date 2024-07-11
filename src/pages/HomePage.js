@@ -1,10 +1,8 @@
 import { Container, Grid, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import jobs from "../data/jobs.json";
 import JobCard from "../components/JobCard";
 import styled from "styled-components";
 import getJobs from "../data/fetchData";
-import api from "../data/fetchData";
 
 const CenterPagination = styled(Pagination)(({ theme }) => ({
   ul: {
@@ -17,15 +15,16 @@ const CenterPagination = styled(Pagination)(({ theme }) => ({
 function HomePage() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalJobs, setTotalJobs] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  // const [totalJobs, setTotalJobs] = useState(0);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [itemsPerPage] = useState(5);
+  const [totalPage, setTotalPage] = useState(0);
 
   useEffect(() => {
     const fetchJobs = async () => {
       const data = await getJobs(page);
       setJobs(data.jobs);
-      setTotalJobs(data.totalPage);
+      setTotalPage(data.totalPage);
     };
     fetchJobs();
   }, [page]);
@@ -54,7 +53,7 @@ function HomePage() {
         ))}
       </Grid>
       <CenterPagination
-        count={Math.ceil(jobs.length / 5)}
+        count={totalPage}
         page={page}
         sx={{
           mt: "15px",

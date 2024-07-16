@@ -2,7 +2,8 @@ import { Container, Grid, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import JobCard from "../components/JobCard";
 import styled from "styled-components";
-import getJobs from "../data/fetchData";
+import api from "../data/fetchData";
+import { useSearchParams } from "react-router-dom";
 
 const CenterPagination = styled(Pagination)(({ theme }) => ({
   ul: {
@@ -15,23 +16,18 @@ const CenterPagination = styled(Pagination)(({ theme }) => ({
 function HomePage() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
-  // const [totalJobs, setTotalJobs] = useState(0);
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [itemsPerPage] = useState(5);
   const [totalPage, setTotalPage] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const q = searchParams.get("q");
 
   useEffect(() => {
     const fetchJobs = async () => {
-      const data = await getJobs(page);
+      const data = await api.getJobs(page, q);
       setJobs(data.jobs);
       setTotalPage(data.totalPage);
     };
     fetchJobs();
-  }, [page]);
-
-  // const indexOfLastItem = currentPage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = jobs.slice(indexOfFirstItem, indexOfLastItem);
+  }, [page, q]);
 
   const handleChange = (e, value) => {
     setPage(value);

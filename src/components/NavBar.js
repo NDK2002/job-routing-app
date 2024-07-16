@@ -13,8 +13,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import LoginIcon from "@mui/icons-material/Login";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button, Stack } from "@mui/material";
+import AuthContext from "../auth/AuthContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -55,6 +56,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const q = searchParams.get("q");
+  const auth = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -73,6 +77,21 @@ export default function SearchAppBar() {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const handleClickLogin = (e) => {
+    navigate("/sign-in");
+  };
+
+  const handlClickLogout = (e) => {
+    auth.signout(() => navigate("/"));
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    let formData = new FormData(event.currentTarget);
+    let q = formData.get("q");
+    setSearchParams({ q: q });
   };
 
   const menuId = "primary-search-account-menu";
@@ -144,7 +163,7 @@ export default function SearchAppBar() {
           >
             Job Routing
           </Typography>
-          <Box component="form">
+          <Box component="form" onSubmit={handleSearch}>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -157,21 +176,28 @@ export default function SearchAppBar() {
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button variant="contained" startIcon={<LoginIcon />}>
-              Sign in
-            </Button>
-            {/* <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <LoginIcon sx={{ mr: 1 }}></LoginIcon>
-              <Typography>Sign in</Typography>
-            </IconButton> */}
+            <Stack direction="row" alignItems="center">
+              {auth?.user ? (
+                <>
+                  <Typography padding="20px">{auth.user}</Typography>
+                  <Button
+                    onClick={handlClickLogout}
+                    variant="contained"
+                    startIcon={<LoginIcon />}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={handleClickLogin}
+                  variant="contained"
+                  startIcon={<LoginIcon />}
+                >
+                  Sign in
+                </Button>
+              )}
+            </Stack>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton

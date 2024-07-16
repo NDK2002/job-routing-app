@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useContext } from "react";
 
 import Card from "@mui/material/Card";
 
@@ -7,6 +7,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Divider, Stack, styled } from "@mui/material";
 import SkillsChip from "./SkillsChip";
+import AuthContext from "../auth/AuthContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const CardStyle = styled(Card)(({ theme }) => ({
   boxShadow: "none",
@@ -20,6 +22,18 @@ const CardStyle = styled(Card)(({ theme }) => ({
 }));
 
 export default function JobCard({ job }) {
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  let location = useLocation();
+
+  const handleClick = (e) => {
+    if (auth.user) {
+      navigate(`/job/${job.id}`);
+    } else {
+      navigate("/sign-in");
+    }
+  };
+
   return (
     <CardStyle ariant="outlined">
       <Stack
@@ -50,6 +64,9 @@ export default function JobCard({ job }) {
 
         <Button
           variant="contained"
+          component={Link}
+          to={`/job/${job.id}`}
+          state={{ backgroundLocation: location }}
           size="small"
           sx={{ width: "130px", backgroundColor: "#df9e0b" }}
         >

@@ -1,15 +1,13 @@
 import React, { useContext, useState } from "react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
-  Alert,
+  Avatar,
   Box,
   Button,
-  FormControl,
   IconButton,
   InputAdornment,
-  InputLabel,
-  OutlinedInput,
   Stack,
   TextField,
   Typography,
@@ -17,32 +15,37 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AuthContext from "../auth/AuthContext";
-import FTextField from "./form/FTextField";
+import { Link } from "react-router-dom";
+// import FTextField from "./form/FTextField";
 
 const style = {
-  bgcolor: "background.paper",
+  // bgcolor: "background.paper",
   display: "flex",
   flexDirection: "column",
-  width: "300px",
+  width: "500px",
   border: "1px solid",
-  padding: "10px",
+  padding: "50px",
   borderRadius: "5px",
+  backgroundColor: (theme) => theme.palette.primary.light,
 };
+
+const schema = yup.object().shape({
+  username: yup.string().required("Username is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+});
+
+// const defaultValues = {
+//   username: "User",
+//   password: "123456",
+// };
+
 function LoginForm({ callback }) {
   const auth = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
 
-  const schema = yup
-    .object({
-      username: yup.string().required("Username is required"),
-      password: yup.string().required(),
-    })
-    .required();
-
-  const defaultValues = {
-    username: "User",
-    password: "123456",
-  };
   const methods = useForm({ resolver: yupResolver(schema) });
   const {
     register,
@@ -55,44 +58,50 @@ function LoginForm({ callback }) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  // const handleLogin = (data) => {
-  //   auth.singin(data.username, callback);
-  // };
+  const handleLogin = (data) => {
+    auth.singin(data.username, callback);
+  };
 
   const onSubmit = (data) => {
-    // handleLogin(data);
+    handleLogin(data);
     console.log(data);
   };
 
   return (
-    <Box sx={style} component="form" gap={4}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h4" component="div">
+    // <form onSubmit={handleSubmit(onSubmit)}>
+    <Box sx={style} component="form" gap={4} onSubmit={handleSubmit(onSubmit)}>
+      <Stack gap={2} alignItems="center" justifyContent="center">
+        <Avatar alt="Login" sx={{ bgcolor: "#df4747" }}>
+          <LockOutlinedIcon sx={{ color: "black" }} />
+        </Avatar>
+        <Typography variant="h4" component="div" sx={{ color: "#fff" }}>
           Login
         </Typography>
-        <Stack gap={5}>
-          {!!errors?.message && (
-            <Alert severity="error">{errors.message}</Alert>
-          )}
-          <Controller
-            name="username"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
+        <Controller
+          name="username"
+          control={control}
+          defaultValue=""
+          render={({ field, fieldState: { error } }) => {
+            return (
               <TextField
                 {...field}
                 label="Username"
                 fullWidth
                 error={!!error}
                 helperText={error?.message}
+                InputLabelProps={{ style: { color: "#bababa" } }}
               />
-              // {errors.username && <span>This field is required</span>}
-            )}
-          />
+            );
+          }}
+        />
+        {/* {errors.username && <span>{errors.username.message}</span>} */}
 
-          <Controller
-            name="password"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
+        <Controller
+          name="password"
+          control={control}
+          defaultValue=""
+          render={({ field, fieldState: { error } }) => {
+            return (
               <TextField
                 label="Password"
                 type={showPassword ? "text" : "password"}
@@ -100,6 +109,7 @@ function LoginForm({ callback }) {
                 error={!!error}
                 helperText={error?.message}
                 {...field}
+                InputLabelProps={{ style: { color: "#bababa" } }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -115,14 +125,41 @@ function LoginForm({ callback }) {
                   ),
                 }}
               />
-            )}
-          />
-        </Stack>
-        <Button type="submit" sx={{ m: 1, width: "10ch" }} variant="contained">
+            );
+          }}
+        />
+        <Button
+          type="submit"
+          sx={{ m: 1, width: "100%", bgcolor: "#df4747" }}
+          variant="contained"
+        >
           Login
         </Button>
-      </form>
+        <Box width="100%">
+          <Stack direction="row" justifyContent="space-between">
+            <Link
+              style={{
+                color: "#df4747",
+                textDecoration: "none",
+                fontSize: "14px",
+              }}
+            >
+              Forgot password?
+            </Link>
+            <Link
+              style={{
+                color: "#df4747",
+                textDecoration: "none",
+                fontSize: "14px",
+              }}
+            >
+              Don't have an account? Sign Up
+            </Link>
+          </Stack>
+        </Box>
+      </Stack>
     </Box>
+    // </form>
   );
 }
 

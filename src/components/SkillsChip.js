@@ -1,12 +1,13 @@
 import { Chip, Paper } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const ListItem = styled("li")(({ theme }) => ({
   margin: "1px",
 }));
 
-function SkillsChip({ skills }) {
+function SkillsChip({ skills = [] }) {
   return (
     <Paper
       sx={{

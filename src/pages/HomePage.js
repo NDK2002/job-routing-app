@@ -24,7 +24,7 @@ function HomePage() {
     const fetchJobs = async () => {
       const data = await api.getJobs(page, q);
       setJobs(data.jobs);
-      setTotalPage(data.totalPage);
+      setTotalPage(data.totalPages);
     };
     fetchJobs();
   }, [page, q]);

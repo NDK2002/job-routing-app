@@ -2,22 +2,22 @@ import apiService from "../app/apiService";
 
 async function getJobs(page, q = null) {
   try {
-    const response = await apiService.get(`/jobs?_page=${page}&_per_page=8`);
-
-    if (q) {
-      let filtedJobs = response.data.data.filter(
-        (job) =>
-          job.title.includes(q) ||
-          job.description.includes(q) ||
-          job.city.includes(q) ||
-          job.skills.some((skill) => skill.includes(q))
-      );
-      return { jobs: filtedJobs, totalPage: 1 };
+    const response = await apiService.get(
+      `/jobs?_page=${page}&_limit=8&q=${q}`
+    );
+    if (response.status === 200) {
+      const totalItems = response.headers.get("x-total-count");
+      if (totalItems) {
+        const totalPages = Math.ceil(parseInt(totalItems) / 8);
+        return {
+          jobs: response.data,
+          totalPages: totalPages,
+        };
+      }
+      console.log();
+      return response.data;
     } else {
-      return {
-        jobs: response.data.data,
-        totalPage: response.data.pages,
-      };
+      console.log(`Failed to retrieve data: ${response.status}`);
     }
   } catch (error) {
     console.log(error.message);

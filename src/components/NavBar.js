@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useContext } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -57,11 +57,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function SearchAppBar() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const q = searchParams.get("q");
-  const auth = React.useContext(AuthContext);
+  const q = searchParams.get("q") || "";
+  const auth = useContext(AuthContext);
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(q);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -87,11 +88,14 @@ export default function SearchAppBar() {
     auth.signout(() => navigate("/"));
   };
 
+  const handleChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   const handleSearch = (event) => {
     event.preventDefault();
-    let formData = new FormData(event.currentTarget);
-    let q = formData.get("q");
-    setSearchParams({ q: q });
+
+    setSearchParams({ q: searchQuery });
   };
 
   const menuId = "primary-search-account-menu";
@@ -169,6 +173,9 @@ export default function SearchAppBar() {
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
+                name="q"
+                value={searchQuery}
+                onChange={handleChange}
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
               />

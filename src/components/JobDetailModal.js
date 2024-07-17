@@ -9,7 +9,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: { xs: "90%", md: 600 },
+  width: { xs: "90%", md: 750 },
   bgcolor: "background.paper",
   borderRadius: 2,
   border: "none",
@@ -39,25 +39,42 @@ function JobDetailModal() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Card
-            sx={{
-              border: "none",
-              boxShadow: 0,
-              backgroundColor: (theme) => theme.palette.primary.light,
-              color: (theme) => theme.palette.common.white,
-            }}
-          >
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {job?.title}
-              </Typography>
-              <SkillsChip skills={job?.skills} />
-              <Typography>{job?.description}</Typography>
-              <Typography variant="h6" component="div">
-                City: {job?.city}
-              </Typography>
-            </CardContent>
-          </Card>
+          {job?.title && job?.description && job?.skills && job?.city && (
+            <Card
+              sx={{
+                border: "none",
+                boxShadow: 0,
+                backgroundColor: (theme) => theme.palette.primary.light,
+                color: (theme) => theme.palette.common.white,
+              }}
+            >
+              <CardContent>
+                <Typography variant="h5" component="div" fontSize="34px">
+                  {job?.title}
+                </Typography>
+                <Typography>{job?.description}</Typography>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  pt="20px"
+                >
+                  <Typography textAlign="center">
+                    Skills:
+                    <SkillsChip skills={job?.skills} />
+                  </Typography>
+                </Box>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  textAlign="center"
+                  pt="20px"
+                >
+                  City: {job?.city}
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
         </Box>
       </Modal>
     </div>
